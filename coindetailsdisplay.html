@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Coins</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+
+        #coins-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .coin {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 200px;
+            text-align: center;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .coin:hover {
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .coin img {
+            width: 50px;
+            height: 50px;
+            margin-bottom: 10px;
+        }
+
+        .coin h3 {
+            margin: 10px 0;
+            font-size: 1.2em;
+        }
+
+        .coin p {
+            margin: 5px 0;
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        .currency-options {
+            margin: 20px 0;
+        }
+
+        .currency-options label {
+            margin-right: 10px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        /* Media Queries for Responsive Design */
+        @media (max-width: 768px) {
+            .coin {
+                width: 150px; /* Adjust width for tablets */
+            }
+
+            .currency-options label {
+                font-size: 1em; /* Smaller font for mobile */
+            }
+
+            .coin h3 {
+                font-size: 1.1em; /* Slightly smaller heading */
+            }
+
+            .coin p {
+                font-size: 0.8em; /* Smaller paragraph font */
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px; /* Reduce padding on mobile */
+            }
+
+            #coins-container {
+                gap: 10px; /* Smaller gap between coins */
+            }
+
+            .coin {
+                width: 100%; /* Full width for mobile */
+            }
+
+            .currency-options {
+                margin: 10px 0; /* Reduce margin on mobile */
+            }
+
+            .currency-options label {
+                font-size: 0.9em; /* Even smaller font for mobile */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1 id="title">Top Cryptocurrencies (USD) $</h1>
+    <div class="currency-options">
+        <label><input type="radio" name="currency" value="usd" checked> $</label>
+        <label><input type="radio" name="currency" value="inr"> ₹</label>
+        <label><input type="radio" name="currency" value="eur"> €</label>
+    </div>
+    <div id="coins-container"></div>
+
+    <script>
+        const currencySymbols = {
+            usd: '$',
+            inr: '₹',
+            eur: '€'
+        };
+
+        async function fetchCoins(currency = 'usd') {
+            try {
+                const response = await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}&order=market_cap_desc&per_page=250&page=1`);
+                const coins = await response.json();
+                displayCoins(coins, currency);
+            } catch (error) {
+                console.error('Error fetching the coin data:', error);
+            }
+        }
+
+        function displayCoins(coins, currency) {
+            const coinsContainer = document.getElementById('coins-container');
+            const symbol = currencySymbols[currency];
+            document.getElementById('title').textContent = `Top Cryptocurrencies (${currency.toUpperCase()}) ${symbol}`;
+            coinsContainer.innerHTML = '';
+
+            coins.forEach(coin => {
+                const coinElement = document.createElement('div');
+                coinElement.className = 'coin';
+
+                coinElement.innerHTML = `
+                    <img src="${coin.image}" alt="${coin.name} logo">
+                    <h3>${coin.name}</h3>
+                    <p>Symbol: ${coin.symbol.toUpperCase()}</p>
+                    <p>Price: ${symbol}${coin.current_price.toLocaleString()}</p>
+                    <p>Market Cap: ${symbol}${coin.market_cap.toLocaleString()}</p>
+                `;
+
+                coinsContainer.appendChild(coinElement);
+            });
+        }
+
+        document.querySelectorAll('input[name="currency"]').forEach(radio => {
+            radio.addEventListener('change', (event) => {
+                fetchCoins(event.target.value);
+            });
+        });
+
+        // Fetch and display coins on initial load with default currency (USD)
+        fetchCoins();
+    </script>
+
+</body>
+</html>

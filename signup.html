@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login / Signup</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: #141414;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        h2 {
+            text-align: center;
+            color: #61dafb;
+            margin-bottom: 20px;
+        }
+
+        form {
+            background: #20232a;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            max-width: 400px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        input[type="text"], input[type="password"] {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #61dafb;
+            background: #282c34;
+            color: #fff;
+            font-size: 1em;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus, input[type="password"]:focus {
+            border-color: #61dafb;
+        }
+
+        button[type="submit"] {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background: #61dafb;
+            color: #282c34;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button[type="submit"]:hover {
+            background: #21a1f1;
+        }
+
+        p {
+            text-align: center;
+            color: #fff;
+        }
+
+        p a {
+            color: #61dafb;
+            text-decoration: none;
+        }
+
+        p a:hover {
+            text-decoration: underline;
+        }
+
+        #error-message, #signup-message {
+            text-align: center;
+            margin-top: 10px;
+        }
+        @media (max-width: 600px) {
+            form {
+                padding: 15px;
+                box-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
+            }
+
+            input[type="text"], input[type="password"] {
+                font-size: 0.9em;
+            }
+
+            button[type="submit"] {
+                font-size: 0.9em;
+            }
+        }
+
+        @media (max-width: 400px) {
+            h2 {
+                font-size: 1.5em;
+            }
+
+            form {
+                max-width: 90%;
+            }
+
+            input[type="text"], input[type="password"] {
+                font-size: 0.8em;
+            }
+
+            button[type="submit"] {
+                font-size: 0.8em;
+            }
+        }
+        </style>
+</head>
+<body>
+    <h2>Signup</h2>
+    <form id="signupForm">
+        <input type="text" id="newUsername" placeholder="Username" required><br>
+        <input type="password" id="newPassword" placeholder="Password" required><br>
+        <button type="submit">Signup</button>
+    </form>
+    <p id="signup-message" style="color: green;"></p>
+
+    <script>
+        document.getElementById('signupForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const newUsername = document.getElementById('newUsername').value;
+            const newPassword = document.getElementById('newPassword').value;
+
+            // Simulate storing user details in local storage (this would be a database in a real application)
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            users.push({ username: newUsername, password: newPassword });
+            localStorage.setItem('users', JSON.stringify(users));
+
+            document.getElementById('signup-message').textContent = 'Signup successful! Redirecting to login...';
+
+            // Redirect to login page after 2 seconds
+            setTimeout(() => {
+                window.location.href = './login.html';
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
